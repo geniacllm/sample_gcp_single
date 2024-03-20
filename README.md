@@ -1,0 +1,2 @@
+# sample_gcp_single
+gcpプレ環境においてシングルGPUでの学習を実行するサンプルプログラム
