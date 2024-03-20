@@ -10,6 +10,6 @@ gcpプレ環境においてシングルGPUでの学習を実行するサンプ�
 鋭意、作成中
 ```
 cd ~
-git clone
+git clone https://github.com/geniacllm/sample_gcp_single.git
 sbatch init.sh
 ```
