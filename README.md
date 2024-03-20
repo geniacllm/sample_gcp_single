@@ -7,8 +7,8 @@ gcpプレ環境においてシングルGPUでの学習を実行するサンプ�
 
 ### 参考：2FA登録後のprivate repositoryへのアクセスについて
 * Github Personal access tokenを発行する
- * Github > Settings > Developper settings > tokens(classic) > New personal access token (classic)
- * ghp_から始まるものが入手できればOK
+** Github > Settings > Developper settings > tokens(classic) > New personal access token (classic)
+** ghp_から始まるものが入手できればOK
 
 ## 初回環境構築（初回のみ）
 ログインサーバーにおいて以下を実行してください。
