@@ -14,10 +14,13 @@ nvidia-smi
 # ベースライン実行のためのコード類のダウンロード
 cd ~/
 git clone https://github.com/matsuolab/ucllm_nedo_prod.git ~/ucllm_nedo_dev
+cd ~/ucllm_nedo_dev/train/
+# Megatron-DeepSpeedのレポジトリをクローン。
 git clone https://github.com/hotsuyuki/Megatron-DeepSpeed
-mv ~/Megatron-DeepSpeed ~/ucllm_nedo_dev/train/
 # mainブランチではエラーが起きる場合があるため、指定のタグにチェックアウト。
 cd ~/ucllm_nedo_dev/train/Megatron-DeepSpeed/ && git fetch origin && git checkout refs/tags/ucllm_nedo_dev_v20240205.1.0
+# apexのレポジトリをクローン。
+git clone https://github.com/NVIDIA/apex
 
 # 環境整備用のconda環境
 mkdir -p ~/miniconda3/ && cd ~/miniconda3/
