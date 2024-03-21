@@ -25,3 +25,21 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-py310_23.10.0-1-Linux-x86_64
 
 source ~/miniconda3/etc/profile.d/conda.sh
 which conda && echo "====" && conda --version
+
+# Step 0-2. Python仮想環境の作成
+cd ~/ucllm_nedo_dev/train/
+
+# Python仮想環境を作成。
+conda create --name .venv python=3.9 -y
+
+# Python仮想環境を有効化した時に自動で環境変数 `$LD_LIBRARY_PATH` を編集するように設定。
+mkdir -p ~/miniconda3/envs/.venv/etc/conda/activate.d
+echo 'export ORIGINAL_LD_LIBRARY_PATH=$LD_LIBRARY_PATH' > ~/miniconda3/envs/.venv/etc/conda/activate.d/edit_environment_variable.sh
+echo 'export LD_LIBRARY_PATH="$HOME/miniconda3/envs/.venv/lib:$LD_LIBRARY_PATH"' >> ~/miniconda3/envs/.venv/etc/conda/activate.d/edit_environment_variable.sh
+chmod +x ~/miniconda3/envs/.venv/etc/conda/activate.d/edit_environment_variable.sh
+
+# Python仮想環境を無効化した時に自動で環境変数 `$LD_LIBRARY_PATH` を元に戻すように設定。
+mkdir -p ~/miniconda3/envs/.venv/etc/conda/deactivate.d
+echo 'export LD_LIBRARY_PATH=$ORIGINAL_LD_LIBRARY_PATH' > ~/miniconda3/envs/.venv/etc/conda/deactivate.d/rollback_environment_variable.sh
+echo 'unset ORIGINAL_LD_LIBRARY_PATH' >> ~/miniconda3/envs/.venv/etc/conda/deactivate.d/rollback_environment_variable.sh
+chmod +x ~/miniconda3/envs/.venv/etc/conda/deactivate.d/rollback_environment_variable.sh
