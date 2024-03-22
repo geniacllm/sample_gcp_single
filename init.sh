@@ -22,6 +22,10 @@ cd ~/ucllm_nedo_dev/train/Megatron-DeepSpeed/ && git fetch origin && git checkou
 # apexのレポジトリをクローン。
 git clone https://github.com/NVIDIA/apex
 cd ~/ucllm_nedo_dev/train/apex/ && git fetch origin && git checkout refs/tags/23.08
+# llm-jp-sftのレポジトリをクローン。
+git clone https://github.com/hotsuyuki/llm-jp-sft
+# mainブランチではエラーが起きる場合があるため、指定のタグにチェックアウト。
+cd ~/ucllm_nedo_dev/train/llm-jp-sft/ && git fetch origin && git checkout refs/tags/ucllm_nedo_dev_v20240208.1.0
 
 # 環境整備用のconda環境
 mkdir -p ~/miniconda3/ && cd ~/miniconda3/
