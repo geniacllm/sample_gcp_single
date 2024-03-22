@@ -10,23 +10,20 @@
 
 # インストールしたcondaを有効化。
 source ~/miniconda3/etc/profile.d/conda.sh
-
-# condaコマンドが使えることを確認。
 which conda && echo "====" && conda --version
+conda activate .venv
 
 # Step 0-2. Python仮想環境の作成（差分）
 cd ~/ucllm_nedo_dev/train/
-conda activate .venv
-
 conda install nvidia/label/cuda-11.8.0::cuda-toolkit
 conda install pytorch==2.2.0 torchvision==0.17.0 torchaudio==2.2.0 pytorch-cuda=11.8 -c pytorch -c nvidia
 which python && echo "====" && python --version
 
 # 環境変数 `$PATH` に `$HOME/miniconda3/envs/.venv/bin` が含まれていることを確認。
-echo $PATH
+echo $PATH | grep miniconda3/envs/.venv/bin
 
 # 環境変数 `$LD_LIBRARY_PATH` に `$HOME/miniconda3/envs/.venv/lib` が含まれていることを確認。
-echo $LD_LIBRARY_PATH
+echo $LD_LIBRARY_PATH | grep miniconda3/envs/.venv/lib
 
 # Step 0-3. パッケージ等のインストール
 cd ~/ucllm_nedo_dev/train/
@@ -39,13 +36,11 @@ pip install deepspeed-kernels
 DS_BUILD_OPS=1 DS_BUILD_EVOFORMER_ATTN=0 DS_BUILD_SPARSE_ATTN=0 pip install deepspeed==0.12.4
 
 # deepspeed関連の拡張機能たち "ops" が正しくインストールされていることを確認。
-ds_report
+ds_report | grep ops
 
 # Step 0-4. Megatron-DeepSpeedのインストール
-cd ~/ucllm_nedo_dev/train/
-
 # Megatron-DeepSpeedをインストール。
 cd ~/ucllm_nedo_dev/train/Megatron-DeepSpeed/ && python setup.py install
 
 # Step 0-5. apexのインストール
-cd ~/ucllm_nedo_dev/train/
+
