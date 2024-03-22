@@ -43,4 +43,30 @@ ds_report | grep ops
 cd ~/ucllm_nedo_dev/train/Megatron-DeepSpeed/ && python setup.py install
 
 # Step 0-5. apexのインストール
+# nvccが対応しているCUDAのバージョンとPyTorchが依存しているCUDAのバージョンが一致していることを確認。
+which nvcc && echo "====" && nvcc --version && echo "====" && python -c "import torch; print(torch.__version__)"
 
+# pipのバージョンが23.1以上であることを確認。
+which pip && echo "====" && pip --version
+
+# pipのバージョンが23.1以上の場合のインストール方法で、apexをインストール。
+# ※しばらく時間がかかるので注意。
+cd ~/ucllm_nedo_dev/train/apex/ && pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --config-settings "--build-option=--cpp_ext" --config-settings "--build-option=--cuda_ext" ./
+
+# apexがインストールされていることを確認。
+pip list | grep "apex"
+
+# apex_C.cpython-39-x86_64-linux-gnu.soが作成されていることを確認。
+find ~/ucllm_nedo_dev/train/apex/build/lib.linux-x86_64-cpython-39/ -name apex_C.cpython-39-x86_64-linux-gnu.so
+
+# Step 0-6. Flash Attention 2のインストール
+# Flash Attention 2のインストールに必要なninjaを念のため再インストール。
+pip uninstall ninja -y && pip install ninja==1.11.1
+
+# Flash Attention 2をインストール。
+pip install flash-attn==2.5.0 --no-build-isolation
+
+# Flash Attention 2.5がインストールされていることを確認。
+pip list | grep "flash-attn"
+
+# Step 0-7. llm-jp-sftのインストール
