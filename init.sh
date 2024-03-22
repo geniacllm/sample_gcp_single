@@ -21,6 +21,7 @@ git clone https://github.com/hotsuyuki/Megatron-DeepSpeed
 cd ~/ucllm_nedo_dev/train/Megatron-DeepSpeed/ && git fetch origin && git checkout refs/tags/ucllm_nedo_dev_v20240205.1.0
 # apexのレポジトリをクローン。
 git clone https://github.com/NVIDIA/apex
+cd ~/ucllm_nedo_dev/train/apex/ && git fetch origin && git checkout refs/tags/23.08
 
 # 環境整備用のconda環境
 mkdir -p ~/miniconda3/ && cd ~/miniconda3/
