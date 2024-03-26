@@ -2,8 +2,9 @@
 gcpプレ環境においてシングルGPUでの学習を実行するサンプルプログラム
 
 ## 前提
-* Geniacプレ環境においてGCPにアクセスできること。
-* 学習データが共有ディスクに保管されていること
+- Geniacプレ環境においてGCPにアクセスできること。
+- 学習データが共有ディスクに保管されていること
+  - /persistentshare/storage/
 
 ### 参考：2FA登録後のprivate repositoryへのアクセスについて
 - Github Personal access tokenを発行する
