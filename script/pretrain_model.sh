@@ -245,7 +245,7 @@ num_workers=0
 
 # 学習用データのロード
 # data_pathに
-data_path="/persistentshare/storage/team_kumagai/datasets/model_data/wiki40bja/output.jsonl"
+data_path="/persistentshare/storage/team_kumagai/tokenizer/swallow/wikipedia_text_document"
 if [ ! -f "${data_path}.bin" ] || [ ! -f "${data_path}.idx" ]; then
     echo "Either ${data_path}.bin or ${data_path}.idx doesn't exist yet, so download arxiv.jsonl and preprocess the data."
     wget https://data.together.xyz/redpajama-data-1T/v1.0.0/arxiv/arxiv_024de5df-1b7f-447c-8c3a-51407d8d6732.jsonl \
@@ -264,6 +264,7 @@ else
 fi
 echo ""
 
+# 事前学習ジョブの実行。
 prescale_grad="true"
 jobname="gpt_${model_size}B_tok${train_tokens_in_billion}B"
 jobname="${jobname}_lr${lr}_min${min_lr}_w${lr_warmup_tokens_in_million}M_d${lr_decay_tokens_in_billion}B_${lr_decay_style}"
