@@ -12,11 +12,10 @@ gcpプレ環境においてシングルGPUでの学習を実行するサンプ�
   - repoに全部チェックをつける。cloneだけなので他は不要。
   - ghp_から始まるものが入手できればOK
 
-## 初回環境構築（初回のみ）
-ログインサーバーにおいて以下を実行してください。
-鋭意、作成中
-```
-cd ~
-git clone https://github.com/geniacllm/sample_gcp_single.git
-sbatch sample_gcp_single/init.sh
-```
+## 全体の流れ
+- init.shを参考に仮想環境を構築する。（bash init.shでは途中でうまくいかない）
+- srunで計算環境にアクセスする
+- 仮想環境を呼び出す
+- トークナイザーをトレーニングする（データが不明だったので、一旦swallowを利用する）
+- 学習用データセットをトークナイザでbinとidxにする。
+- 学習スタート
