@@ -3,37 +3,47 @@
 set -e
 echo ""
 
-# Stores the directory paths as variables.
+# コメント
+# pretrain_model.shは、LLMの事前学習を実行します。
+
+# ディレクトリパスを変数として保存します。
 ucllm_nedo_dev_train_dir="${HOME}/ucllm_nedo_dev/train"
 megatron_deepspeed_dir="${ucllm_nedo_dev_train_dir}/Megatron-DeepSpeed"
+# 確認のためディレクトリパスを表示します。
 echo "ucllm_nedo_dev_train_dir = ${ucllm_nedo_dev_train_dir}"
 echo "megatron_deepspeed_dir = ${megatron_deepspeed_dir}"
 echo ""
 
-# Initializes the arguments.
+# 引数を初期化します。
 input_tokenizer_file=""
 output_model_dir=""
-save_interval=1000
+#save_interval=1000
+save_interval=100
 
-# Parses the arguments.
+# 引数を解析します。
 while [[ ${#} -gt 0 ]]; do
     case ${1} in
-        # Shifts twice for option that takes an argument.
+        # 引数を取るオプションの場合、2回シフトします。
         --input_tokenizer_file) input_tokenizer_file=${2}; shift ;;
         --output_model_dir) output_model_dir=${2}; shift ;;
         --save_interval) save_interval=${2}; shift ;;
+        # 未知のパラメータが渡された場合、エラーメッセージを表示してスクリプトを終了します。
         *) echo "Unknown parameter passed: ${1}"; exit 1 ;;
     esac
     # Shifts once per loop to move to the next key/value.
     shift
 done
 
-# Checks the required arguments.
-if [[ -z ${input_tokenizer_file} ]] || [[ -z ${output_model_dir} ]]; then
-    echo "Error: Missing required arguments."
-    echo "Usage: ${0} --input_tokenizer_file <input_tokenizer_file> --output_model_dir <output_model_dir>"
-    exit 1
+# トークナイザーの指定がない場合はデフォルトトークナイザーを利用する
+if [[ -z ${input_tokenizer_file} ]]; then
+    input_tokenizer_file="/persistentshare/storage/team_kumagai/tokenizer/swallow/tokenizer.model"
 fi
+
+# モデル出力先の指定がない場合はデフォルト出力先を利用する
+if [[ -z ${output_model_dir} ]]; then
+    output_model_dir="${HOME}/ucllm_nedo_dev/train/output/step2_pretrain_model"
+fi
+
 
 # Modifies the arguments.
 output_model_dir="${output_model_dir%/}"  # Removes a trailing slash "/" if it exists.
@@ -173,8 +183,8 @@ lr_decay_tokens_in_billion=${train_tokens_in_billion}
 lr_decay_tokens=$((${lr_decay_tokens_in_billion} * 1000 * 1000 * 1000))
 lr_decay_style="cosine"
 ###############################################################################
-### Parallelism configs
-## Model parallelism, 1 is no MP
+### 並列計算の設定
+## Model parallelism, 1 is no MP（GPU数が増えると値を増やす）
 mp_size=1
 
 ## Pipeline parallelism. To disable PP, set pp_size to 1 and no_pp to true.
@@ -233,9 +243,9 @@ host="${HOSTNAME}"
 seed=1234
 num_workers=0
 
-# If either arxiv_text_document.bin or arxiv_text_document.idx doesn't exist yet,
-# then downloads arxiv.jsonl and preprocesses the data.
-data_path="${megatron_deepspeed_dir}/dataset/arxiv_text_document"
+# 学習用データのロード
+# data_pathに
+data_path="/persistentshare/storage/team_kumagai/datasets/model_data/wiki40bja/output.jsonl"
 if [ ! -f "${data_path}.bin" ] || [ ! -f "${data_path}.idx" ]; then
     echo "Either ${data_path}.bin or ${data_path}.idx doesn't exist yet, so download arxiv.jsonl and preprocess the data."
     wget https://data.together.xyz/redpajama-data-1T/v1.0.0/arxiv/arxiv_024de5df-1b7f-447c-8c3a-51407d8d6732.jsonl \
