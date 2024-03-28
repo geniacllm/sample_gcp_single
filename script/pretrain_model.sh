@@ -351,6 +351,7 @@ megatron_options="${megatron_options} \
     --log-optimizer-states-to-tensorboard"
 fi
 
+# 設定はここ。重要そう。
 config_json="${deepspeed_config_dir}/ds_config_gbs${global_batch_size}_mbs${batch_size}_log${log_interval}_zero${zero_stage}.json"
 template_json="${megatron_deepspeed_dir}/examples_deepspeed/rebase/ds_config_gpt_TEMPLATE.json"
 sed "s/GBSIZE/${global_batch_size}/" ${template_json} \
