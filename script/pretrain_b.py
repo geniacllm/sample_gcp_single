@@ -53,6 +53,7 @@ from deepspeed import comm as dist
 
 try:
     import wandb
+    wandb.init(project="test")
 except (ImportError, ModuleNotFoundError):
     wandb = None
 
