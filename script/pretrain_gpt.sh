@@ -20,7 +20,7 @@ output_model_dir=""
 #save_interval=1000
 save_interval=100
 
-# 引数を解析します。
+# シェル実行時の引数を確認します。（本来不要）
 while [[ ${#} -gt 0 ]]; do
     case ${1} in
         # 引数を取るオプションの場合、2回シフトします。
@@ -41,9 +41,8 @@ fi
 
 # モデル出力先の指定がない場合はデフォルト出力先を利用する
 if [[ -z ${output_model_dir} ]]; then
-    output_model_dir="${HOME}/ucllm_nedo_dev/train/output/step2_pretrain_model"
+    output_model_dir="/persistentshare/storage/team_kumagai/tmp/${USER}/output/step2_pretrain_model"
 fi
-
 
 # Modifies the arguments.
 output_model_dir="${output_model_dir%/}"  # Removes a trailing slash "/" if it exists.
@@ -207,16 +206,16 @@ zero_stage=0
 ## Total number of GPUs.
 num_gpus_pernode=$(nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
 num_node="${NHOSTS}"
-num_gpus=$((${num_gpus_pernode} * ${num_node}))
+num_gpus=4
 
 ## Data parallel size.
-dp_size=$(( ${num_gpus} / ${pp_size} / ${mp_size} ))
+dp_size=1
 
 ## Micro batch size per GPU
 ## Make sure that batch_size <= global_batch_size*pp_size*mp_size/num_gpus
 ## Reduce it manually if GPU OOM
 #batch_size=$(( ${global_batch_size} / ${dp_size} ))
-batch_size=1
+batch_size=8
 ###############################################################################
 ### Misc configs
 log_interval=10
@@ -244,7 +243,6 @@ seed=1234
 num_workers=0
 
 # 学習用データのロード
-# data_pathに
 data_path="/persistentshare/storage/team_kumagai/tokenizer/swallow/wikipedia_text_document"
 if [ ! -f "${data_path}.bin" ] || [ ! -f "${data_path}.idx" ]; then
     echo "Either ${data_path}.bin or ${data_path}.idx doesn't exist yet, so download arxiv.jsonl and preprocess the data."
@@ -351,7 +349,7 @@ megatron_options="${megatron_options} \
     --log-optimizer-states-to-tensorboard"
 fi
 
-# 設定はここ。重要そう。
+# 設定configはここ
 config_json="${deepspeed_config_dir}/ds_config_gbs${global_batch_size}_mbs${batch_size}_log${log_interval}_zero${zero_stage}.json"
 template_json="${megatron_deepspeed_dir}/examples_deepspeed/rebase/ds_config_gpt_TEMPLATE.json"
 sed "s/GBSIZE/${global_batch_size}/" ${template_json} \
@@ -400,4 +398,6 @@ deepspeed ${megatron_deepspeed_dir}/pretrain_gpt.py \
     ${megatron_options} \
     ${data_options} \
     ${deepspeed_options} \
+    --wandb-group "Megatron-Deepspeed-gbs${global_batch_size}_mbs${batch_size}_log${log_interval}_zero${zero_stage}" \
     2>&1 | tee ${log_path}/${jobname}_${host}_${current_time}.log
+
